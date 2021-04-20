@@ -39,5 +39,10 @@ public class Board {
 		return pieces[position.getRow()][position.getColumn()];
 	}
 	
+	public void placePiece(Piece piece, Position position) {
+		pieces[position.getRow()][position.getColumn()] = piece; //colocar a Peça na posicao do tabuleiro
+		piece.position = position; //a posicao da peça agora eh position.
+					//lembrando q Position eh PROTECTED e por isso consegue acessar por aqui assim.
+	}
 
 }
