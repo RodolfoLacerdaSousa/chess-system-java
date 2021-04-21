@@ -9,10 +9,22 @@ import chess.pieces.Rook;
 public class ChessMatch { // regras do jogo
 
 	private Board board;
+	private int turn;
+	private Color currentPlayer;
 
 	public ChessMatch() {
 		board = new Board(8, 8); // cria o tabuleiro 8 por 8
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		inicialSetup(); // chama a funcao q inicia a partida
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public Color getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public ChessPiece[][] getPieces() { // vai retornar uma matriz de peças de xadrez correpondentes a essa partida
@@ -47,6 +59,7 @@ public class ChessMatch { // regras do jogo
 		
 		Piece capturedPiece = makeMove(source, target);
 		
+		nextTurn(); //para trocar o turno
 		return (ChessPiece)capturedPiece;
 	}
 	
@@ -62,9 +75,15 @@ public class ChessMatch { // regras do jogo
 		if (!board.thereIsAPiece(position)) { //se nao existir 1 peça na posicao de origem
 			throw new ChessException("There is no piece on source position");
 		}
-		if (!board.piece(position).isThereAnyPossibleMove()) //testar se existe movimentos 
+		if (currentPlayer != ((ChessPiece)board.piece(position)).getColor()) { //testa a cor da peça, se for difernte do jogador atual.
+																//significa q eh a peça do jogador adversario e assi nao posso move-la
+			throw new ChessException("The chosen piece is not yours");
+			
+		}
+		if (!board.piece(position).isThereAnyPossibleMove()) { //testar se existe movimentos 
 															//possiveis para a peça, se nao tiver lanca a execão
 			throw new ChessException("There is no possible moves for the chosen piece");
+		}
 	}
 	
 	private void validateTargetPosition(Position source,Position target) { //se eh um movimento possivel em relação a posicao de destino
@@ -72,11 +91,16 @@ public class ChessMatch { // regras do jogo
 			throw new ChessException("The chosen piece can't move to target position");
 		}
 	}
+	
+	private void nextTurn() {
+		turn++;
+		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE; //troca de turno
+	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
-
+	
 	private void inicialSetup() { // vai iniciar a partida de xadrez, colocando as peças no tabuleiro
 		
 		placeNewPiece('c', 1, new Rook(board, Color.WHITE));
