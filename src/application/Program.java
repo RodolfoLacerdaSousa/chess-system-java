@@ -17,11 +17,16 @@ public class Program {
 		
 		while (true) {
 			try {
-				UI.clearScreen();
-				UI.printBoard(chessMatch.getPieces());
+				UI.clearScreen(); //limpa a tela
+				UI.printBoard(chessMatch.getPieces()); // imprime o tabuleiro
 				System.out.println();
 				System.out.print("Source: ");
 				ChessPosition source = UI.readChessPosition(sc);
+				
+				//mostra os movimentos possiveis
+				boolean[][] possibleMoves = chessMatch.possibleMoves(source); 
+				UI.clearScreen();
+				UI.printBoard(chessMatch.getPieces(), possibleMoves); //sobrecarga para mostrar os movimentos
 				
 				System.out.println();
 				System.out.print("Target: ");
